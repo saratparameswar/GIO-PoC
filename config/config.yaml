@@ -1,0 +1,20 @@
+
+data_source: http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
+
+artifacts: 
+  binder_dir: binder_files
+binder_rules:
+  templates-1: 
+      name: "Aircraft Policy - ABC Form"
+      policy_names: "Aircraft Policy - ABC Form"
+      address: "Newyork"
+  template-2:
+      name: "Aircraft policy Broad Covg(original)"
+      policy_names: "Aircraft Policy - Broad Coverage Endorsement,Aircraft Policy – Broad Coverage Form"
+      address: "Newyork,NY,AK,Arkansa"
+  template-3:
+      name: "Aircraft-policy.pdf"
+      policy_names: "Aircraft Insurance Policy - Broad Coverage Endorsement"
+      address: "Newyork,NY,AK,Arkansa"
+
+

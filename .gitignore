@@ -1,0 +1,8 @@
+config/azure_config.cfg
+src.egg-info/
+src/__pycache__/*
+src/utils/__pycache__/*
+binder_files/*
+template_files/*
+!binder_files/.gitkeep
+!template_files/.gitkeep
