@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+from datetime import datetime, timedelta
 from configparser import SectionProxy
 from azure.identity import DeviceCodeCredential, ClientSecretCredential
 from msgraph.core import GraphClient
@@ -57,10 +58,14 @@ class Graph:
         # Only request specific properties
         select = 'from,isRead,receivedDateTime,subject,hasAttachments'
         # Get at most 25 results
-        top = 25
+        # top = 25
         # Sort by received time, newest first
         order_by = 'receivedDateTime DESC'
-        request_url = f'{endpoint}?$select={select}&$top={top}&$orderBy={order_by}'
+
+        # Added date filter for 24 hours
+        yesterday = (datetime.now() + timedelta(hours=-72)).replace(microsecond=0).isoformat() + 'Z'
+        # request_url = f'{endpoint}?$select={select}&$top={top}&$orderBy={order_by}&$filter=receivedDateTime+ge+{yesterday}'
+        request_url = f'{endpoint}?$select={select}&$orderBy={order_by}&$filter=receivedDateTime+ge+{yesterday}'
 
         inbox_response = self.user_client.get(request_url)
         return inbox_response.json()
@@ -78,16 +83,70 @@ class Graph:
         # save_folder = os.getcwd()
         save_folder = './binder_files'  # made change
         message_id = str(input('Enter ID of the email:'))
-        attachment_items = Graph.get_attachments_details(self, message_id)['value']  # try except-ID related
+        # attachment_items = Graph.get_attachments_details(self, message_id)['value']  # try except-ID related
+        #
+        # for attachment in attachment_items:
+        #     file_name = attachment['name']
+        #     file_id = attachment['id']
+        #     request_url = f'/me/messages/{message_id}/attachments/{file_id}/$value'
+        #     attachment_content = self.user_client.get(request_url)
+        #     print('Saving file {0}...'.format(file_name))
+        #
+        #     with open(os.path.join(save_folder, file_name), 'wb') as _f:  # look for exceptions
+        #         _f.write(attachment_content.content)
 
-        for attachment in attachment_items:
-            file_name = attachment['name']
-            file_id = attachment['id']
-            request_url = f'/me/messages/{message_id}/attachments/{file_id}/$value'
-            attachment_content = self.user_client.get(request_url)
-            print('Saving file {0}...'.format(file_name))
-            with open(os.path.join(save_folder, file_name), 'wb') as _f:  # look for exceptions
-                _f.write(attachment_content.content)
+        ### new code
+
+        inbox_response_json = self.get_inbox()
+
+        for message in inbox_response_json['value']:
+            if message['id'] == message_id:
+                attachment_items = Graph.get_attachments_details(self, message_id)['value']  # try except-ID related
+                email_date_time = message['receivedDateTime'].split('T')[0]
+                for attachment in attachment_items:
+                    file_name = attachment['name']
+                    file_id = attachment['id']
+                    request_url = f'/me/messages/{message_id}/attachments/{file_id}/$value'
+                    attachment_content = self.user_client.get(request_url)
+                    try:
+                        print('Saving file {0}...'.format(file_name))
+                        download_path = save_folder + '/{}/{}'.format(email_date_time, message['receivedDateTime'].split('T')[1].replace(':', '.')[:-1] + "-" + message['from']['emailAddress']['address'])
+                        if not os.path.exists(download_path):
+                            os.makedirs(download_path)
+                        with open(os.path.join(download_path, file_name), 'wb+') as _f:  # look for exceptions
+                            _f.write(attachment_content.content)
+                    except FileExistsError:
+                        print('File already exists')
+                    except OSError:
+                        raise
+
+    def download_all_attachments(self):
+        save_folder = './binder_files'
+        inbox_response_json = self.get_inbox()
+
+        for message in inbox_response_json['value']:
+            if message['hasAttachments']:
+                message_id = message['id']
+                attachment_items = Graph.get_attachments_details(self, message_id)['value']  # try except-ID related
+                email_date_time = message['receivedDateTime'].split('T')[0]
+                for attachment in attachment_items:
+                    file_name = attachment['name']
+                    file_id = attachment['id']
+                    request_url = f'/me/messages/{message_id}/attachments/{file_id}/$value'
+                    attachment_content = self.user_client.get(request_url)
+                    try:
+                        print('Saving file {0}...'.format(file_name))
+                        download_path = save_folder + '/{}/{}'.format(email_date_time, message['receivedDateTime'].split('T')[1].replace(':', '.')[:-1] + "-" + message['from']['emailAddress']['address'])
+                        if not os.path.exists(download_path):
+                            os.makedirs(download_path)
+                        with open(os.path.join(download_path, file_name), 'wb+') as _f:  # look for exceptions
+                            _f.write(attachment_content.content)
+                    except FileExistsError:
+                        print('File already exists')
+                    except OSError:
+                        raise
+            else:
+                continue
 
     def send_mail(self, template_name: str, recipient: str):
         request_body = {

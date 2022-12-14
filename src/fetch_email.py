@@ -19,13 +19,14 @@ def main():
     while choice != 0:
         print('Please choose one of the following options:')
         print('0. Exit')
-        print('1. Display access token')
-        print('2. List my inbox')
-        print('3. Send mail')
-        print('4. List users (requires app-only)')
-        print('5. Make a Graph call')
-        print("6. Retrieve an attachment's ID")
-        print("7. Save an attachment")
+        # print('1. Display access token')
+        print('1. List my inbox')
+        print('2. Send mail')
+        # print('4. List users (requires app-only)')
+        # print('5. Make a Graph call')
+        # print("6. Retrieve an attachment's ID")
+        print("3. Save an attachment with an ID")
+        print("4. Save all attachments of last day")
         try:
             choice = int(input())
         except ValueError:
@@ -33,20 +34,22 @@ def main():
 
         if choice == 0:
             print('Goodbye...')
+        # elif choice == 1:
+        #     display_access_token(graph)
         elif choice == 1:
-            display_access_token(graph)
-        elif choice == 2:
             list_inbox(graph)
-        elif choice == 3:
+        elif choice == 2:
             send_mail(graph)
-        elif choice == 4:
-            list_users(graph)
-        elif choice == 5:
-            make_graph_call(graph)
-        elif choice == 6:
-            for_attachment_details(graph)
-        elif choice == 7:
+        # elif choice == 4:
+        #     list_users(graph)
+        # elif choice == 5:
+        #     make_graph_call(graph)
+        # elif choice == 6:
+        #     for_attachment_details(graph)
+        elif choice == 3:
             to_download_file(graph)
+        elif choice == 4:
+            for_all_attachments(graph)
         else:
             print('Invalid choice!\n')
 
@@ -111,6 +114,11 @@ def send_mail(graph: Graph):
     graph.send_mail(attachment_name, user_email)
     print('Mail sent.\n')
     return
+
+
+def for_all_attachments(graph: Graph):
+    graph.download_all_attachments()
+    print('All attachments has been saved')
 
 
 def list_users(graph: Graph):
