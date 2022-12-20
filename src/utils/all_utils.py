@@ -18,5 +18,5 @@ def get_template_from_txt(doc_text: str, binder_rules: dict) -> str:
 #         print(match_policy_names)
         if any(match_policy_names):
             match_address = [True if re.search(str_rule, doc_text) else False for str_rule in
-                             rules['address'].split(',')]
+                             rules['location'].split(',')]
             return rules['name']

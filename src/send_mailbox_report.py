@@ -86,14 +86,15 @@ def get_data(config_path, f_path, f_name):
         pdfFileObj = open(f_path, 'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
         # Iterate through each pdf page content texts
+        doc_text = ""
         for page in range(0, pdfReader.numPages):
             pageObj = pdfReader.getPage(page)
-            doc_text = pageObj.extractText()
+            doc_text += pageObj.extractText()
             # Choose the appropriate template based on the rules in the config file
-            binder_rules = config["binder_rules"]
-            template_name = get_template_from_txt(doc_text, binder_rules)
-            return template_name
-            break
+    
+        binder_rules = config["binder_rules"]
+        template_name = get_template_from_txt(doc_text, binder_rules)
+        return template_name
     elif f_name.endswith('.docx'):
         doc_text = docx2txt.process(f_path)
         # Choose the appropriate template based on the rules in the config file
