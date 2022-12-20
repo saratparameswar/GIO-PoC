@@ -1,5 +1,5 @@
 from src.utils.all_utils import read_yaml, get_template_from_txt
-# from src.utils.fetch_email import main
+from src.utils.send_email import send_email
 import argparse
 import pandas as pd
 import os
@@ -37,6 +37,17 @@ if __name__ == '__main__':
     args.add_argument("--config", "-c", default="config/config.yaml")
     args.add_argument("--file", "-f")
     parsed_args = args.parse_args()
-    # print(get_data(config_path=parsed_args.config, f_name=parsed_args.file))
     template_name = get_data(config_path=parsed_args.config, f_name=parsed_args.file)
+    print("template name is --", template_name)
+    
+    sender =     ''
+    destination = ['']
+    # typical values for text_subtype are plain, html, xml
+    text_subtype = 'plain'
+    content="""\
+    Test message
+    """
+    subject="Thanks for emailing us"
+    
+    print(send_email(destination, sender, subject, msg="Hi"))
 

@@ -13,7 +13,7 @@ binder_rules:
       policy_names: "Aircraft Policy - Broad Coverage Endorsement,Aircraft Policy – Broad Coverage Form"
       address: "Newyork,NY,AK,Arkansa"
   template-3:
-      name: "Aircraft-policy.pdf"
+      name: "Aircraft policy"
       policy_names: "Aircraft Insurance Policy - Broad Coverage Endorsement"
       address: "Newyork,NY,AK,Arkansa"
 
