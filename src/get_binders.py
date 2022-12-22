@@ -22,7 +22,7 @@ def get_data(config_path, f_name):
             doc_text += pageObj.extractText()
             # Choose the appropriate template based on the rules in the config file
         binder_rules = config["binder_rules"]
-        print(binder_rules)
+#         print(binder_rules)
         template_name = get_template_from_txt(doc_text, binder_rules)
         return template_name
 
@@ -36,7 +36,7 @@ def get_data(config_path, f_name):
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser(description='Process the binders')
-    args.add_argument("--config", "-c", default="config/config.yaml")
+    args.add_argument("--config", "-c", default="config/templates_config.yaml")
     args.add_argument("--file", "-f")
     parsed_args = args.parse_args()
     template_name = get_data(config_path=parsed_args.config, f_name=parsed_args.file)
