@@ -109,7 +109,7 @@ if __name__ == '__main__':
     
     email_details_html = ""
 
-    path = "./binder_files"
+    path = "./binder_files/downloads"
     date_folders = get_immediate_subdirectories(path)
     data_list = []
     
@@ -129,7 +129,7 @@ if __name__ == '__main__':
                 time = ""
                 attached_files = ""
             f_path = path+'/'+date+'/'+email
-            template_name = get_data("config/config.yaml", f_path, attached_files)
+            template_name = get_data("config/templates_config.yaml", f_path, attached_files)
             if time and sender:
                 emails_in_day_list.append([date,time,sender,attached_files, template_name])
     for email_data in emails_in_day_list:

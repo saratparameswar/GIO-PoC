@@ -1,3 +1,4 @@
+__pycache__/
 config/azure_config.cfg
 src.egg-info/
 src/__pycache__/*
@@ -6,3 +7,8 @@ binder_files/*
 template_files/*
 !binder_files/.gitkeep
 !template_files/.gitkeep
+tests/.ipynb_checkpoints/
+.ipynb_checkpoints/
+config/.ipynb_checkpoints/
+src/.ipynb_checkpoints/
+src/utils/.ipynb_checkpoints/
